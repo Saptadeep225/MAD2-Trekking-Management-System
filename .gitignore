@@ -52,3 +52,6 @@ desktop.ini
 *.njsproj
 *.sln
 *.sw?
+
+.gitignore
+manual.txt
