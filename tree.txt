@@ -1,0 +1,81 @@
+Folder PATH listing for Trekking Management Application
+D:.
+│   .gitignore
+│   README.md
+│   tree.txt
+│   
+├───BackendFlask
+│   │   app.py
+│   │   requirements.txt
+│   │   
+│   ├───application
+│   │   │   config.py
+│   │   │   extensions.py
+│   │   │   init_db.py
+│   │   │   models.py
+│   │   │   tasks.py
+│   │   │   workers.py
+│   │   │   
+│   │   └───routes
+│   │           admin.py
+│   │           api.py
+│   │           auth.py
+│   │           staff.py
+│   │           user.py
+│   │           utils.py
+│   │           __init__.py
+│   │           
+│   └───instance
+│           database.db
+│           
+└───FrontendVue
+    │   index.html
+    │   jsconfig.json
+    │   package.json
+    │   vite.config.js
+    │   
+    ├───public
+    │       manifest.json
+    │       sw.js
+    │       
+    └───src
+        │   App.vue
+        │   main.js
+        │   
+        ├───assets
+        │       style.css
+        │       
+        ├───components
+        │       Navbar.vue
+        │       
+        ├───store
+        │       index.js
+        │       
+        ├───utils
+        │       api.js
+        │       
+        └───views
+            │   Home.vue
+            │   Login.vue
+            │   Register.vue
+            │   
+            ├───admin
+            │       AdminAssignStaff.vue
+            │       AdminBookings.vue
+            │       AdminDashboard.vue
+            │       AdminStaff.vue
+            │       AdminTrekForm.vue
+            │       AdminTreks.vue
+            │       AdminUsers.vue
+            │       
+            ├───staff
+            │       StaffDashboard.vue
+            │       StaffParticipants.vue
+            │       StaffTrekEdit.vue
+            │       StaffTreks.vue
+            │       
+            └───user
+                    UserBookings.vue
+                    UserDashboard.vue
+                    UserProfile.vue
+                    UserTreks.vue
