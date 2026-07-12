@@ -37,6 +37,11 @@ class StaffAssignedTreks(Resource):
 
 class StaffUpdateTrek(Resource):
     @role_required("staff")
+    def get(self, id):
+        trek = Trek.query.get_or_404(id)
+        return serialize_trek(trek), 200
+
+    @role_required("staff")
     def put(self, id):
         trek = Trek.query.get_or_404(id)
         if trek.assigned_staff != current_user.id:

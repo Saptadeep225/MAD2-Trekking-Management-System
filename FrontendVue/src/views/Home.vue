@@ -41,7 +41,7 @@
           </div>
           <div class="col-lg-6">
               <div class="card bg-dark text-white rounded-4 border-0 shadow overflow-hidden">
-                  <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80" alt="Mountain Peak" class="card-img opacity-50">
+                  <img src="/images/hero.jpg" alt="Mountain Peak" class="card-img opacity-50">
                   <div class="card-img-overlay d-flex flex-column justify-content-end p-4">
                       <h4 class="fw-bold">Ready for the Summit?</h4>
                       <p class="card-text small text-light opacity-75">Sign up today and browse moderate to extreme itineraries led by certified experts.</p>

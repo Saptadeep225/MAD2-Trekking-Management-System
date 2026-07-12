@@ -49,7 +49,7 @@ export default {
         async fetchTrekDetails() {
             const id = this.$route.params.id;
             try {
-                const res = await fetchAPI(`/api/treks/${id}`);
+                const res = await fetchAPI(`/admin/treks/edit/${id}`);
                 if (res) {
                     this.trekName = res.name;
                     this.selectedStaffId = res.assigned_staff;

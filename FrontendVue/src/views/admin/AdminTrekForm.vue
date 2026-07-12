@@ -99,7 +99,7 @@ export default {
     methods: {
         async fetchTrekDetails(id) {
             try {
-                const res = await fetchAPI(`/api/treks/${id}`);
+                const res = await fetchAPI(`/admin/treks/edit/${id}`);
                 if (res) {
                     this.form = {
                         ...res,

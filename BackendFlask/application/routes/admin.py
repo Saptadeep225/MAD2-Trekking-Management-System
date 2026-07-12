@@ -224,6 +224,11 @@ class AdminAssignStaff(Resource):
 
 class AdminEditTrek(Resource):
     @role_required("admin")
+    def get(self, id):
+        trek = Trek.query.get_or_404(id)
+        return serialize_trek(trek), 200
+
+    @role_required("admin")
     def put(self, id):
         trek = Trek.query.get_or_404(id)
         data = request.get_json(silent=True) or {}

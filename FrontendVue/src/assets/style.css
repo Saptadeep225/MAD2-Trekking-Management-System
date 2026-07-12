@@ -43,13 +43,13 @@ body {
 }
 
 .navbar-nav .nav-link:hover,
-.navbar-nav .router-link-active {
+.navbar-nav .nav-link.router-link-active {
     color: #ffffff !important;
 }
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65)), url('/images/hero.jpg') center/cover no-repeat;
     min-height: 550px;
     display: flex;
     align-items: center;

@@ -7,7 +7,7 @@ import redis
 from application.config import Config
 from application.models import db, User
 from application.extensions import cache
-from application.routes import auth, admin, staff, user, api
+from application.routes import auth, admin, staff, user
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -45,7 +45,6 @@ app.register_blueprint(auth)
 app.register_blueprint(admin)
 app.register_blueprint(staff)
 app.register_blueprint(user)
-app.register_blueprint(api)
 
 
 @app.route("/")
