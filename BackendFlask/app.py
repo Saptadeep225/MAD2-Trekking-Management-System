@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager
 from werkzeug.security import generate_password_hash
 import redis
 
+from application import workers
 from application.config import Config
 from application.models import db, User
 from application.extensions import cache
@@ -12,12 +13,9 @@ from application.routes import auth, admin, staff, user
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Enable CORS for frontend integration
 CORS(app)
 
 db.init_app(app)
-
-# Initialize Cache with fallback support
 try:
     r = redis.Redis(host="localhost", port=6379, socket_timeout=1)
     r.ping()
@@ -27,9 +25,6 @@ except Exception:
     print("Redis is offline. Falling back to SimpleCache.")
 
 cache.init_app(app)
-
-# ---------------- JWT Manager ---------------- #
-
 jwt = JWTManager(app)
 
 
@@ -38,8 +33,8 @@ def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
     return User.query.filter_by(id=int(identity)).one_or_none()
 
-
-# ---------------- Register Blueprints ---------------- #
+celery = workers.make_celery(app)
+app.app_context().push()
 
 app.register_blueprint(auth)
 app.register_blueprint(admin)
@@ -50,9 +45,6 @@ app.register_blueprint(user)
 @app.route("/")
 def home():
     return {"message": "TrekTracker REST API is running successfully."}, 200
-
-
-# ---------------- Create Default Admin ---------------- #
 
 with app.app_context():
     db.create_all()

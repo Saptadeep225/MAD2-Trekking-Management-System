@@ -42,7 +42,6 @@ class UserTreksList(Resource):
         difficulty = request.args.get("difficulty", "")
         location = request.args.get("location", "")
         query = Trek.query.filter_by(status="Open", is_deleted=False)
-
         if search:
             query = query.filter(
                 Trek.name.contains(search)

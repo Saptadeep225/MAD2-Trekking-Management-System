@@ -32,7 +32,6 @@ def init_db():
         db.session.commit()
         print("Default Admin Created.")
 
-        # Staff
         staff_names = ["Rahul", "Amit", "Priya", "Sneha", "Rohit"]
         staff_members = []
         for i, name in enumerate(staff_names, start=1):

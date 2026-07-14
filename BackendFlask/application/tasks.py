@@ -4,6 +4,9 @@ from datetime import datetime, date, timedelta
 import os
 import csv
 import json
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from application.models import db, User, Trek, Booking
 from application.workers import make_celery
 from app import app
@@ -12,14 +15,26 @@ from app import app
 celery_app = make_celery(app)
 
 
-def save_email_locally(subject, recipient, body, email_type):
-    folder = os.path.join(app.root_path, "instance", "sent_emails", email_type)
-    os.makedirs(folder, exist_ok=True)
-    filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{recipient}.html"
-    filepath = os.path.join(folder, filename)
-    with open(filepath, "w", encoding="utf-8") as f:
-        f.write(f"Subject: {subject}\nRecipient: {recipient}\n\n{body}")
-    print(f"Logged email to {filepath}")
+def send_email(recipient, subject, body):
+    msg = MIMEMultipart()
+    msg["From"] = app.config.get("SENDER_EMAIL", "admin@trek.com")
+    msg["To"] = recipient
+    msg["Subject"] = subject
+    msg.attach(MIMEText(body, "html"))
+    
+    mail_server = app.config.get("MAIL_SERVER", "localhost")
+    mail_port = app.config.get("MAIL_PORT", 1025)
+    sender_email = app.config.get("SENDER_EMAIL")
+    sender_password = app.config.get("SENDER_PASSWORD")
+    
+    try:
+        with smtplib.SMTP(host=mail_server, port=mail_port) as server:
+            if sender_email and sender_password:
+                server.login(sender_email, sender_password)
+            server.send_message(msg)
+            print(f"Sent email to {recipient}")
+    except Exception as e:
+        print(f"Failed to send email to {recipient}: {str(e)}")
 
 
 def add_user_notification(user_id, message, download_url=None):
@@ -100,7 +115,7 @@ def send_daily_reminders():
                 </body>
                 </html>
                 """
-                save_email_locally(subject, recipient, body, "daily_reminders")
+                send_email(recipient, subject, body)
                 count += 1
                 
     return f"Sent {count} daily reminders."
@@ -142,18 +157,12 @@ def send_monthly_report():
     </body>
     </html>
     """
-    save_email_locally(subject, recipient, body, "monthly_reports")
+    send_email(recipient, subject, body)
     return "Monthly report sent to Admin."
 
 
-celery_app.conf.beat_schedule = {
-    'send-daily-reminders-every-day': {
-        'task': 'application.tasks.send_daily_reminders',
-        'schedule': crontab(hour=8, minute=0),
-    },
-    'send-monthly-report-first-of-month': {
-        'task': 'application.tasks.send_monthly_report',
-        'schedule': crontab(day_of_month=1, hour=0, minute=0),
-    }
-}
-celery_app.conf.timezone = 'UTC'
+@celery_app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(crontab(hour=8, minute=0), send_daily_reminders.s(), name="Daily Reminder")
+    sender.add_periodic_task(crontab(day_of_month=1, hour=0, minute=0), send_monthly_report.s(), name="Monthly Report")
+celery_app.conf.timezone = 'IST'
