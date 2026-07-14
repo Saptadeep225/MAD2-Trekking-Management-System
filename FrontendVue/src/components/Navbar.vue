@@ -3,7 +3,7 @@
       <div class="container">
           <router-link to="/" class="navbar-brand d-flex align-items-center">
               <i class="bi bi-compass me-2"></i>
-              <span class="fw-bold tracking-tight">TrekTracker</span>
+              <span class="fw-bold tracking-tight">TrekTour</span>
           </router-link>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>

@@ -6,7 +6,7 @@
     </div>
     <footer class="footer py-3 text-center text-muted border-top mt-auto bg-white">
         <div class="container">
-            <span>Trekking Management Application V2</span>
+            <span>TrekTour</span>
         </div>
     </footer>
   </div>

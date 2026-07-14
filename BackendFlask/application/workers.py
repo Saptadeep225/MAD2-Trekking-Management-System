@@ -6,6 +6,10 @@ def make_celery(app):
         backend=app.config.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0'),
         broker=app.config.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
     )
+    celery.conf.update(
+        timezone="Asia/Kolkata",
+        broker_connection_retry_on_startup=True
+    )
 
     class ContextTask(celery.Task):
         def __call__(self, *args, **kwargs):

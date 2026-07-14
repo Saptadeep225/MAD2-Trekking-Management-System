@@ -1,4 +1,3 @@
-from celery import Celery
 from celery.schedules import crontab
 from datetime import datetime, date, timedelta
 import os
@@ -8,11 +7,8 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from application.models import db, User, Trek, Booking
-from application.workers import make_celery
+from app import celery
 from app import app
-
-
-celery_app = make_celery(app)
 
 
 def send_email(recipient, subject, body):
@@ -41,7 +37,6 @@ def add_user_notification(user_id, message, download_url=None):
     folder = os.path.join(app.root_path, "instance", "notifications")
     os.makedirs(folder, exist_ok=True)
     filepath = os.path.join(folder, f"{user_id}.json")
-    
     notifications = []
     if os.path.exists(filepath):
         try:
@@ -49,7 +44,6 @@ def add_user_notification(user_id, message, download_url=None):
                 notifications = json.load(f)
         except Exception:
             notifications = []
-            
     notifications.append({
         "message": message,
         "download_url": download_url,
@@ -60,7 +54,7 @@ def add_user_notification(user_id, message, download_url=None):
         json.dump(notifications, f, indent=4)
 
 
-@celery_app.task
+@celery.task
 def export_bookings_csv(user_id, username):
     export_dir = os.path.join(app.root_path, "static", "exports")
     os.makedirs(export_dir, exist_ok=True)
@@ -87,13 +81,16 @@ def export_bookings_csv(user_id, username):
     download_url = f"/static/exports/{filename}"
     add_user_notification(user_id, "Booking history exported successfully. Click here to download.", download_url)
     print(f"Exported booking history for user {username} to {filepath}")
+    
+    user = User.query.get(user_id)
+    if user and user.email:
+        send_email(user.email, "Export Completed", "Your booking history has been exported successfully. You can download it from your notifications in the dashboard.")
 
 
-@celery_app.task
+@celery.task
 def send_daily_reminders():
     tomorrow = date.today() + timedelta(days=1)
     upcoming_treks = Trek.query.filter_by(start_date=tomorrow, is_deleted=False).all()
-    
     count = 0
     for trek in upcoming_treks:
         for booking in trek.bookings:
@@ -117,11 +114,10 @@ def send_daily_reminders():
                 """
                 send_email(recipient, subject, body)
                 count += 1
-                
     return f"Sent {count} daily reminders."
 
 
-@celery_app.task
+@celery.task
 def send_monthly_report():
     first_day_this_month = date.today().replace(day=1)
     last_day_prev_month = first_day_this_month - timedelta(days=1)
@@ -161,8 +157,7 @@ def send_monthly_report():
     return "Monthly report sent to Admin."
 
 
-@celery_app.on_after_configure.connect
+@celery.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(crontab(hour=8, minute=0), send_daily_reminders.s(), name="Daily Reminder")
     sender.add_periodic_task(crontab(day_of_month=1, hour=0, minute=0), send_monthly_report.s(), name="Monthly Report")
-celery_app.conf.timezone = 'IST'

@@ -39,13 +39,7 @@
                               <input type="password" v-model="form.confirm_password" class="form-control bg-light" required placeholder="Re-type password">
                           </div>
                       </div>
-                      <div class="mb-4">
-                          <label class="form-label fw-medium">Role Category</label>
-                          <select v-model="form.role" class="form-select bg-light">
-                              <option value="user">User (Trekker)</option>
-                              <option value="staff">Trek Staff (Requires Admin Approval)</option>
-                          </select>
-                      </div>
+
                       <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill fw-semibold shadow-sm mb-3">
                           <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
                           Register

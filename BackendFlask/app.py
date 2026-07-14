@@ -36,6 +36,8 @@ def user_lookup_callback(_jwt_header, jwt_data):
 celery = workers.make_celery(app)
 app.app_context().push()
 
+import application.tasks
+
 app.register_blueprint(auth)
 app.register_blueprint(admin)
 app.register_blueprint(staff)
@@ -44,7 +46,7 @@ app.register_blueprint(user)
 
 @app.route("/")
 def home():
-    return {"message": "TrekTracker REST API is running successfully."}, 200
+    return {"message": "TrekTour REST API is running successfully."}, 200
 
 with app.app_context():
     db.create_all()

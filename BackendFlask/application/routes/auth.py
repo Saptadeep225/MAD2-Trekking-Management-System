@@ -18,7 +18,10 @@ class LoginResource(Resource):
             return {"message": "Invalid username or password."}, 400
 
         user = User.query.filter_by(username=username).first()
-        if user and check_password_hash(user.password, password):
+        if not user:
+            return {"message": "User is not registered."}, 404
+
+        if check_password_hash(user.password, password):
             if user.role == "staff" and user.status == "pending":
                 return {"message": "Your account is waiting for admin approval."}, 403
             if user.status == "blacklisted":
@@ -39,7 +42,7 @@ class LoginResource(Resource):
                 }
             }, 200
 
-        return {"message": "Invalid username or password."}, 401
+        return {"message": "Invalid password."}, 401
 
 
 class RegisterResource(Resource):
@@ -51,9 +54,7 @@ class RegisterResource(Resource):
         phone = data.get("phone", "").strip()
         password = data.get("password", "")
         confirm_password = data.get("confirm_password", "")
-        role = data.get("role", "user")
-        if role not in ["user", "staff"]:
-            role = "user"
+        role = "user"
 
         # Validation
         if not username or not name or not email or not password:

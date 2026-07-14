@@ -51,9 +51,9 @@ def seed_data():
         users = []
         for i in range(1, 201):
             user = User(
-                username=f"user_{generate_random_string(5)}",
+                username=f"user{i}",
                 name=f"Trekker {i}",
-                email=f"user{i}_{generate_random_string(3)}@gmail.com",
+                email=f"user{i}@gmail.com",
                 phone=generate_random_phone(),
                 password=generate_password_hash("user123"),
                 role="user",
